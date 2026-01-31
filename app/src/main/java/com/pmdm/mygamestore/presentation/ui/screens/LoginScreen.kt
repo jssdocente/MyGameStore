@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.pmdm.mygamestore.presentation.ui.componentes.RoundedButton
+import com.pmdm.mygamestore.presentation.ui.componentes.TextFieldGS
 import com.pmdm.mygamestore.presentation.ui.theme.dimens
 
 @Composable
@@ -72,23 +73,12 @@ fun LoginScreen() {
                         .fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(dimens.small))
-                OutlinedTextField(
+
+                TextFieldGS(
                     value = username,
                     onValueChange = { username = it },
-                    placeholder = {
-                        Text(
-                            text = "Enter your username",
-                            color = MaterialTheme.colorScheme.secondary
-                        )
-                    },
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                        cursorColor = MaterialTheme.colorScheme.primary
-                    )
+                    placeholder = "Enter your username",
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(dimens.large))
@@ -102,24 +92,12 @@ fun LoginScreen() {
                         .fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(dimens.small))
-                OutlinedTextField(
+
+                TextFieldGS(
                     value = password,
                     onValueChange = { password = it },
-                    placeholder = {
-                        Text(
-                            text = "Enter your password",
-                            color = MaterialTheme.colorScheme.secondary
-                        )
-                    },
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp),
-                    visualTransformation = PasswordVisualTransformation(),
+                    placeholder = "Enter your password",
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                        cursorColor = MaterialTheme.colorScheme.primary
-                    )
                 )
 
                 Spacer(modifier = Modifier.height(dimens.extraLarge))
