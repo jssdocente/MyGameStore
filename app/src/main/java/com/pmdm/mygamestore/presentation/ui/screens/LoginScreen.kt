@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.pmdm.mygamestore.presentation.ui.componentes.LabeledTextFieldGS
 import com.pmdm.mygamestore.presentation.ui.componentes.RoundedButton
 import com.pmdm.mygamestore.presentation.ui.componentes.TextFieldGS
 import com.pmdm.mygamestore.presentation.ui.theme.dimens
@@ -64,43 +65,30 @@ fun LoginScreen() {
 
                 Spacer(modifier = Modifier.height(dimens.extraLarge))
 
-                // Username label
-                Text(
-                    text = "Username",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(dimens.small))
+                //Campo Username ccon etiqueta
 
-                TextFieldGS(
+                LabeledTextFieldGS(
+                    label = "Username",
                     value = username,
                     onValueChange = { username = it },
                     placeholder = "Enter your username",
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(dimens.large))
-
-                // Password label
-                Text(
-                    text = "Password",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
                 Spacer(modifier = Modifier.height(dimens.small))
 
-                TextFieldGS(
+                // Campo de Password con etiqueta
+
+                LabeledTextFieldGS(
+                    label = "Password",
                     value = password,
                     onValueChange = { password = it },
                     placeholder = "Enter your password",
                     modifier = Modifier.fillMaxWidth(),
+                    visualTransformation = PasswordVisualTransformation()
                 )
 
-                Spacer(modifier = Modifier.height(dimens.extraLarge))
+                Spacer(modifier = Modifier.height(dimens.large))
 
                 RoundedButton(
                     texto = "Login",
@@ -109,6 +97,8 @@ fun LoginScreen() {
                 )
 
                 Spacer(modifier = Modifier.height(dimens.large))
+
+                // Botón Registro
                 Text(
                     text = "Register",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
@@ -117,6 +107,7 @@ fun LoginScreen() {
 
                 Spacer(modifier = Modifier.weight(1f))
 
+                // Texto al final de la página
                 Text(
                     text = "GameVault",
                     style = MaterialTheme.typography.bodyLarge,
