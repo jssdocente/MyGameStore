@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.pmdm.mygamestore.presentation.ui.theme.dimens
 
 @Composable
 fun BaseBoton(
@@ -25,7 +26,8 @@ fun BaseBoton(
         colors = ButtonDefaults.buttonColors(
             containerColor = colorFondo,
             contentColor = colorTexto
-        )
+        ),
+        shape = shape
     ) {
         Text(text = texto,style = MaterialTheme.typography.titleMedium)
     }
@@ -36,7 +38,7 @@ fun RoundedButton(
     texto: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    shape: RoundedCornerShape = RoundedCornerShape(16.dp),
+    shape: RoundedCornerShape = RoundedCornerShape(MaterialTheme.dimens.small),
     colorFondo: Color = MaterialTheme.colorScheme.primary, // Color por defecto
     colorTexto: Color = MaterialTheme.colorScheme.onPrimary,
 ) {

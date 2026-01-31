@@ -106,7 +106,7 @@ fun ProvideDimensions(
 fun MyGameStoreTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Los colores dinámicos están disponibles a partir de Android 12 (S)
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     // Selección del esquema de colores

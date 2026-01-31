@@ -1,5 +1,6 @@
 package com.pmdm.mygamestore.presentation.ui.screens
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,9 +25,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.pmdm.mygamestore.R
 import com.pmdm.mygamestore.presentation.ui.componentes.LabeledTextFieldGS
 import com.pmdm.mygamestore.presentation.ui.componentes.RoundedButton
 import com.pmdm.mygamestore.presentation.ui.componentes.TextFieldGS
@@ -34,14 +37,13 @@ import com.pmdm.mygamestore.presentation.ui.theme.dimens
 
 @Composable
 fun LoginScreen() {
-    val dimens = MaterialTheme.dimens
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {},
-        modifier = Modifier.padding(dimens.paddingMedium)
+        modifier = Modifier.padding(MaterialTheme.dimens.paddingMedium)
     ) { innerPadding ->
 
         Box(
@@ -56,14 +58,14 @@ fun LoginScreen() {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(dimens.large))
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.large))
                 Text(
-                    text = "GameVault",
+                    text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
-                Spacer(modifier = Modifier.height(dimens.extraLarge))
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.extraLarge))
 
                 //Campo Username ccon etiqueta
 
@@ -75,7 +77,7 @@ fun LoginScreen() {
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(dimens.small))
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.small))
 
                 // Campo de Password con etiqueta
 
@@ -88,15 +90,16 @@ fun LoginScreen() {
                     visualTransformation = PasswordVisualTransformation()
                 )
 
-                Spacer(modifier = Modifier.height(dimens.large))
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.large))
 
                 RoundedButton(
                     texto = "Login",
-                    modifier = Modifier.fillMaxWidth().height(52.dp),
+                    colorFondo = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.fillMaxWidth().height(MaterialTheme.dimens.buttonHeightMedium),
                     onClick = {}
                 )
 
-                Spacer(modifier = Modifier.height(dimens.large))
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.large))
 
                 // Botón Registro
                 Text(
@@ -109,10 +112,10 @@ fun LoginScreen() {
 
                 // Texto al final de la página
                 Text(
-                    text = "GameVault",
+                    text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.padding(bottom = dimens.paddingMedium)
+                    modifier = Modifier.padding(bottom = MaterialTheme.dimens.paddingMedium)
                 )
             }
         }
