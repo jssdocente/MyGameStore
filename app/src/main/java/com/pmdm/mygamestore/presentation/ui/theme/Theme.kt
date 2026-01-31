@@ -13,6 +13,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -20,25 +21,51 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = GsPurple,
+    onPrimary = GsOnPrimary,
+    primaryContainer = GsDarkPrimaryContainer,
+    onPrimaryContainer = GsDarkOnPrimaryContainer,
+
+    background = GsDarkBackground,
+    onBackground = GsDarkOnBackground,
+
+    surface = GsDarkSurface,
+    onSurface = GsDarkOnSurface,
+    surfaceVariant = GsDarkSurfaceVariant,
+    onSurfaceVariant = GsDarkOnSurfaceVariant,
+    outline = GsDarkOutline,
+
+    secondary = GsDarkSecondary,
+    onSecondary = Color(0xFF1B1329),
+    secondaryContainer = GsDarkSecondaryContainer,
+    onSecondaryContainer = GsDarkOnSecondaryContainer,
+
+    tertiary = GsPurpleDark,
+    onTertiary = Color(0xFFFFFFFF)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = GsPurple,
+    onPrimary = GsOnPrimary,
+    primaryContainer = GsPurpleContainer,
+    onPrimaryContainer = GsPurpleContainerOn,
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    background = GsBackground,
+    onBackground = GsOnBackground,
+
+    surface = GsSurface,
+    onSurface = GsOnSurface,
+    surfaceVariant = GsSurfaceVariant,
+    onSurfaceVariant = GsOnSurfaceVariant,
+    outline = GsOutline,
+
+    secondary = GsPurpleLight,
+    onSecondary = Color(0xFF1F1147),
+    secondaryContainer = GsSecondaryContainer,
+    onSecondaryContainer = GsOnSecondaryContainer,
+
+    tertiary = GsPurpleDark,
+    onTertiary = Color(0xFFFFFFFF)
 )
 
 /**

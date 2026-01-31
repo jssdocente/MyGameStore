@@ -1,10 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- MyGameStore — Light scheme -->
+    <color name="gs_purple">#FF7C2CF2</color>
+    <color name="gs_purple_dark">#FF6D28D9</color>
+    <color name="gs_purple_light">#FFA78BFA</color>
+
+    <color name="gs_on_primary">#FFFFFFFF</color>
+
+    <color name="gs_purple_container">#FFE7D7FF</color>
+    <color name="gs_purple_container_on">#FF2E1065</color>
+    <color name="gs_secondary_container">#FFF1EAFE</color>
+    <color name="gs_on_secondary_container">#FF2E1065</color>
+
+    <color name="gs_background">#FFF7F3FA</color>
+    <color name="gs_surface">#FFF7F3FA</color>
+    <color name="gs_surface_variant">#FFE9DEF6</color>
+    <color name="gs_on_background">#FF1B1B1F</color>
+    <color name="gs_on_surface">#FF1B1B1F</color>
+    <color name="gs_on_surface_variant">#FF4A4458</color>
+    <color name="gs_outline">#FFD9C7F0</color>
+
+    <!-- GameVault — Dark scheme -->
+    <color name="gs_dark_background">#FF15101B</color>
+    <color name="gs_dark_surface">#FF15101B</color>
+    <color name="gs_dark_surface_variant">#FF2A2133</color>
+    <color name="gs_dark_on_background">#FFEAE6F0</color>
+    <color name="gs_dark_on_surface">#FFEAE6F0</color>
+    <color name="gs_dark_on_surface_variant">#FFC9BEDA</color>
+
+    <color name="gs_dark_primary_container">#FF3A2459</color>
+    <color name="gs_dark_on_primary_container">#FFECDCFF</color>
+    <color name="gs_dark_secondary">#FFC4B1FF</color>
+    <color name="gs_dark_secondary_container">#FF35274F</color>
+    <color name="gs_dark_on_secondary_container">#FFECDCFF</color>
+    <color name="gs_dark_outline">#FF4A3A55</color>
 </resources>
