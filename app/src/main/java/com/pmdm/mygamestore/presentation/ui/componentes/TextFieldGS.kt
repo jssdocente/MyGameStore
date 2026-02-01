@@ -31,7 +31,8 @@ fun TextFieldGS(
     focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
     unfocusedBorderColor: Color = MaterialTheme.colorScheme.outline,
     cursorColor: Color = MaterialTheme.colorScheme.primary,
-    placeholderColor: Color = MaterialTheme.colorScheme.secondary
+    placeholderColor: Color = MaterialTheme.colorScheme.secondary,
+    enabled: Boolean = true
 ) {
     OutlinedTextField(
         value = value,
@@ -47,6 +48,7 @@ fun TextFieldGS(
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,
         modifier = modifier,
+        enabled = enabled,
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = focusedBorderColor,
             unfocusedBorderColor = unfocusedBorderColor,
@@ -71,7 +73,8 @@ fun LabeledTextFieldGS(
     cursorColor: Color = MaterialTheme.colorScheme.primary,
     placeholderColor: Color = MaterialTheme.colorScheme.secondary,
     labelColor: Color = MaterialTheme.colorScheme.onBackground,
-    spacerHeight: Dp = MaterialTheme.dimens.small
+    spacerHeight: Dp = MaterialTheme.dimens.small,
+    enabled: Boolean = true
 ) {
     val dimens = MaterialTheme.dimens
 
@@ -99,7 +102,8 @@ fun LabeledTextFieldGS(
             focusedBorderColor = focusedBorderColor,
             unfocusedBorderColor = unfocusedBorderColor,
             cursorColor = cursorColor,
-            placeholderColor = placeholderColor
+            placeholderColor = placeholderColor,
+            enabled = enabled
         )
     }
 }

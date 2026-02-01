@@ -18,7 +18,8 @@ fun BaseBoton(
     modifier: Modifier = Modifier,
     colorFondo: Color = MaterialTheme.colorScheme.primary, // Color por defecto
     colorTexto: Color = MaterialTheme.colorScheme.onPrimary,
-    shape: RoundedCornerShape
+    shape: RoundedCornerShape,
+    enabled: Boolean= true
 ) {
     Button(
         onClick = onClick,
@@ -41,6 +42,7 @@ fun RoundedButton(
     shape: RoundedCornerShape = RoundedCornerShape(MaterialTheme.dimens.small),
     colorFondo: Color = MaterialTheme.colorScheme.primary, // Color por defecto
     colorTexto: Color = MaterialTheme.colorScheme.onPrimary,
+    enabled: Boolean = true
 ) {
     BaseBoton(
         texto = texto,
@@ -48,7 +50,8 @@ fun RoundedButton(
         colorFondo = colorFondo,
         colorTexto = colorTexto,
         shape = shape,
-        modifier = modifier
+        modifier = modifier,
+        enabled = enabled
     )
 }
 
