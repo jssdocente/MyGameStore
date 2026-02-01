@@ -180,7 +180,7 @@ fun RegisterScreen(
                 CircularProgressIndicator(
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .offset(y = 100.dp),
+                        .offset(y = 200.dp),
                     color = MaterialTheme.colorScheme.primary
                 )
             }

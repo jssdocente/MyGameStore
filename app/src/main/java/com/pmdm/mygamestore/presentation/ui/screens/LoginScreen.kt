@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,7 +42,8 @@ fun LoginScreen(
     viewModel: LoginViewModel = viewModel(
         factory = LoginViewModelFactory(LocalContext.current)
     ),
-    onLoginSuccess: () -> Unit = {}
+    onLoginSuccess: () -> Unit = {},
+    onNavigateToRegister: () -> Unit = {}
 ) {
     // Observar el estado del ViewModel
     val uiState by viewModel.uiState.collectAsState()
@@ -130,12 +132,14 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(MaterialTheme.dimens.large))
 
-                // Botón Registro
-                Text(
-                    text = "Register",
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+                // Link a Registro
+                TextButton(onClick = onNavigateToRegister) {
+                    Text(
+                        text = "Don't have an account? Register",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
 
                 Spacer(modifier = Modifier.weight(1f))
 
