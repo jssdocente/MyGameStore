@@ -60,6 +60,9 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.compose.foundation.layout)
 
+    // DataStore Preferences
+    implementation(libs.androidx.datastore.preferences)
+
 
     // Testing
     testImplementation(libs.junit)
