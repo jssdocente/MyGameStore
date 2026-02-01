@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -33,10 +34,13 @@ import com.pmdm.mygamestore.presentation.ui.componentes.LabeledTextFieldGS
 import com.pmdm.mygamestore.presentation.ui.componentes.RoundedButton
 import com.pmdm.mygamestore.presentation.ui.theme.dimens
 import com.pmdm.mygamestore.presentation.viewmodel.LoginViewModel
+import com.pmdm.mygamestore.presentation.viewmodel.LoginViewModelFactory
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = viewModel(),
+    viewModel: LoginViewModel = viewModel(
+        factory = LoginViewModelFactory(LocalContext.current)
+    ),
     onLoginSuccess: () -> Unit = {}
 ) {
     // Observar el estado del ViewModel
@@ -157,3 +161,5 @@ fun LoginScreen(
         }
     }
 }
+
+

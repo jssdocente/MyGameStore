@@ -1,10 +1,14 @@
 package com.pmdm.mygamestore.presentation.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.pmdm.mygamestore.data.repository.AuthRepository
 import com.pmdm.mygamestore.data.repository.AuthRepositoryImpl
 import com.pmdm.mygamestore.data.repository.LoginResult
+import com.pmdm.mygamestore.data.repository.SessionManager
+import com.pmdm.mygamestore.data.repository.SessionManagerImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +29,9 @@ data class LoginUiState(
  * @param authRepository Repositorio para operaciones de autenticación
  */
 class LoginViewModel(
-    private val authRepository: AuthRepository = AuthRepositoryImpl()
+    context: Context,
+    private val authRepository: AuthRepository = AuthRepositoryImpl(),
+    private val sessionManager: SessionManager = SessionManagerImpl(context)
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -79,6 +85,7 @@ class LoginViewModel(
             when (result) {
                 is LoginResult.Success -> {
                     _uiState.update {
+                        sessionManager.saveSession(result.username)  // guarda la sesión del usuario
                         it.copy(
                             isLoading = false,
                             isLoginSuccessful = true,
@@ -106,5 +113,22 @@ class LoginViewModel(
 
     fun resetLoginSuccess() {
         _uiState.update { it.copy(isLoginSuccessful = false) }
+    }
+}
+
+
+/**
+ * Factory para crear LoginViewModel con Context
+ */
+class LoginViewModelFactory(
+    private val context: Context
+) : ViewModelProvider.Factory {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
+            return LoginViewModel(context) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
