@@ -21,3 +21,20 @@ sealed class LoginResult {
      */
     data class Error(val message: String) : LoginResult()
 }
+
+/**
+ * 🎯 Sealed class que representa los posibles resultados de un registro
+ */
+sealed class RegisterResult {
+    /**
+     * Registro exitoso
+     * @param username Nombre del usuario registrado
+     */
+    data class Success(val username: String) : RegisterResult()
+
+    /**
+     * Registro fallido
+     * @param message Mensaje describiendo el error
+     */
+    data class Error(val message: String) : RegisterResult()
+}

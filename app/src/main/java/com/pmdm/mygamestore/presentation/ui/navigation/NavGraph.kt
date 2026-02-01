@@ -25,7 +25,7 @@ val LocalNavStack = staticCompositionLocalOf<MutableList<NavKey>> {
 @Composable
 fun AppNavigation() {
     // Gestiona el historial de navegación, comenzando con la pantalla Splash
-    val backStack = rememberNavBackStack(AppRoutes.Splash)
+    val backStack = rememberNavBackStack(AppRoutes.Register)
 
 
     //Envolvemos la navegación con el BackStack, permitiendo obtener el `backStack` desde el contexto.
