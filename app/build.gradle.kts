@@ -58,6 +58,12 @@ dependencies {
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.kotlinx.serialization.json)
+
+    // Coil para carga de imágenes desde URLs
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+    // Material Icons Extended para más iconos
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.compose.foundation.layout)
 
     // DataStore Preferences
