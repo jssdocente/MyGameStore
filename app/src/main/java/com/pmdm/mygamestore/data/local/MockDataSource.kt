@@ -1,20 +1,30 @@
 package com.pmdm.mygamestore.data.local
 
+import com.pmdm.mygamestore.domain.model.EsrbRating
 import com.pmdm.mygamestore.domain.model.Game
 import com.pmdm.mygamestore.domain.model.GameCategory
 import com.pmdm.mygamestore.domain.model.Genre
 import com.pmdm.mygamestore.domain.model.Platform
 import com.pmdm.mygamestore.domain.model.PlatformEnum
 import com.pmdm.mygamestore.domain.model.Publisher
+import com.pmdm.mygamestore.domain.model.Screenshot
 import com.pmdm.mygamestore.domain.model.Store
 import com.pmdm.mygamestore.domain.model.Tag
 
 /**
- *  Fuente de datos mock para desarrollo
+ * MockDataSource es un objeto que simula una fuente de datos para una aplicación centrada en videojuegos.
+ * Sirve como recurso inicial para proporcionar información estática relacionada con géneros, plataformas,
+ * editores, tiendas, etiquetas y juegos.
  *
- * RESPONSABILIDAD:
- * - Proveer datos de prueba para desarrollo sin depender de API
- * - Simular respuesta de una base de datos o API
+ * Datos proveídos:
+ * - `genres`: Lista de géneros populares de videojuegos, definidos por un identificador único, nombre y slug.
+ * - `platforms`: Lista de plataformas disponibles para videojuegos, con su respectivo identificador, nombre y slug.
+ * - `publishers`: Lista de editores de videojuegos reconocidos, identificados por un ID, nombre y slug.
+ * - `stores`: Lista de tiendas en las que se pueden adquirir juegos o contenido relacionado, con su correspondiente identificador, nombre y slug.
+ * - `tags`: Lista de etiquetas (tags) relevantes para clasificar los videojuegos, definidas por ID, nombre y slug.
+ * - `games`: Lista de detalles de juegos predefinidos, incluyendo información como título, descripción, precio, calificación, fecha de lanzamiento,
+ *  plataformas soportadas, géneros relacionados, tiendas donde están disponibles, etiquetas asociadas, capturas de pantalla, entre otros atributos específicos
+ * .
  */
 object MockDataSource {
 
@@ -108,148 +118,330 @@ object MockDataSource {
 
     val games = listOf(
         Game(
-            id = 1,
-            title = "The Witcher 3: Wild Hunt",
-            description = "An epic open-world RPG adventure set in a fantasy universe. Hunt monsters, make choices that matter, and explore a vast world filled with quests.",
-            imageUrl = "https://picsum.photos/400/600?random=1",
-            price = 39.99,
-            rating = 4.8,
-            releaseDate = "2024-01-15",
-            category = GameCategory.RPG,
-            platform = PlatformEnum.PC,
-            genres = listOf("RPG", "Open World", "Fantasy")
-        ),
-        Game(
-            id = 2,
-            title = "God of War Ragnarök",
-            description = "Continue Kratos and Atreus' Norse adventure in this breathtaking sequel. Epic battles, emotional storytelling, and stunning visuals await.",
-            imageUrl = "https://picsum.photos/400/600?random=2",
-            price = 59.99,
-            rating = 4.9,
-            releaseDate = "2024-02-01",
+            id = 998492,
+            slug = "system-shock-2-25th-anniversary-remaster",
+            title = "System Shock 2: 25th Anniversary Remaster",
+            description = "From FromSoftware and George R.R. Martin comes a dark fantasy epic. Explore a vast interconnected world filled with danger and mystery in this groundbreaking action RPG adventure.",
+            imageUrl = "https://media.rawg.io/media/screenshots/95d/95df624f84b7bca99b56da01aeea4789.jpg",
+            price = 29.99,
+            rating = 4.62,
+            releaseDate = "2025-06-25",
             category = GameCategory.ACTION,
-            platform = PlatformEnum.PLAYSTATION,
-            genres = listOf("Action", "Adventure", "Mythology")
+            platforms = listOf(platforms[0]), // PC
+            genres = listOf(genres[2], genres[3], genres[4]), // Adventure, Action, RPG
+            stores = listOf(stores[0], stores[5]), // Steam, GOG
+            tags = listOf(tags[0], tags[4], tags[6], tags[7], tags[17]),
+            screenshots = listOf(
+                Screenshot(
+                    -1,
+                    "https://media.rawg.io/media/screenshots/95d/95df624f84b7bca99b56da01aeea4789.jpg"
+                ),
+                Screenshot(
+                    4167067,
+                    "https://media.rawg.io/media/screenshots/2f6/2f6816c288af8ed154a0d0d0e9b21e4d.jpg"
+                ),
+                Screenshot(
+                    4167068,
+                    "https://media.rawg.io/media/screenshots/965/9650e2922d2c4d5efe3c4bf97c9f0c81.jpg"
+                )
+            ),
+            metacritic = null,
+            playtime = 1,
+            ratingsCount = 8,
+            esrbRating = EsrbRating(4, "Mature", "mature")
         ),
         Game(
-            id = 3,
-            title = "Halo Infinite",
-            description = "Master Chief returns in this epic FPS adventure. Experience the next chapter of the legendary Halo saga with new gameplay and multiplayer.",
-            imageUrl = "https://picsum.photos/400/600?random=3",
+            id = 1002847,
+            slug = "geoguessr",
+            title = "GeoGuessr",
+            description = "Experience geography exploration like never before. Test your knowledge of the world in this engaging puzzle game that challenges you to identify locations from around the globe.",
+            imageUrl = "https://media.rawg.io/media/screenshots/252/252fea2a340c8f398ca56ddb7649a20e.jpg",
+            price = 9.99,
+            rating = 4.5,
+            releaseDate = "2025-05-08",
+            category = GameCategory.PUZZLE,
+            platforms = listOf(platforms[0]), // PC
+            genres = listOf(genres[6], genres[3]), // Casual, Action
+            stores = listOf(stores[0]), // Steam
+            tags = listOf(tags[6], tags[3], tags[9], tags[5], tags[8]),
+            screenshots = listOf(
+                Screenshot(
+                    -1,
+                    "https://media.rawg.io/media/screenshots/252/252fea2a340c8f398ca56ddb7649a20e.jpg"
+                ),
+                Screenshot(
+                    4199990,
+                    "https://media.rawg.io/media/screenshots/0a0/0a005561eeb8a9e178529ccca3d623f7.jpg"
+                )
+            ),
+            metacritic = null,
+            playtime = 2,
+            ratingsCount = 6,
+            esrbRating = null
+        ),
+        Game(
+            id = 983210,
+            slug = "clair-obscur-expedition-33",
+            title = "Clair Obscur: Expedition 33",
+            description = "Embark on a mysterious expedition in this atmospheric RPG adventure. Uncover secrets, battle formidable foes, and shape the fate of your journey with meaningful choices.",
+            imageUrl = "https://media.rawg.io/media/games/466/4667f17fdee9ebbcea2049e54f8e2b96.jpg",
             price = 49.99,
             rating = 4.5,
-            releaseDate = "2023-12-10",
-            category = GameCategory.ACTION,
-            platform = PlatformEnum.XBOX,
-            genres = listOf("FPS", "Sci-Fi", "Multiplayer")
-        ),
-        Game(
-            id = 4,
-            title = "The Legend of Zelda: TOTK",
-            description = "Explore Hyrule like never before in this groundbreaking adventure. Discover new abilities, solve puzzles, and uncover ancient secrets.",
-            imageUrl = "https://picsum.photos/400/600?random=4",
-            price = 59.99,
-            rating = 5.0,
-            releaseDate = "2024-01-20",
-            category = GameCategory.ADVENTURE,
-            platform = PlatformEnum.NINTENDO,
-            genres = listOf("Adventure", "Puzzle", "Open World")
-        ),
-        Game(
-            id = 5,
-            title = "Stardew Valley",
-            description = "Build your dream farm in this relaxing and addictive simulation. Grow crops, raise animals, go fishing, and become part of the community.",
-            imageUrl = "https://picsum.photos/400/600?random=5",
-            price = 14.99,
-            rating = 4.7,
-            releaseDate = "2023-11-05",
-            category = GameCategory.SIMULATION,
-            platform = PlatformEnum.MOBILE,
-            genres = listOf("Simulation", "Farming", "Indie")
-        ),
-        Game(
-            id = 6,
-            title = "FIFA 24",
-            description = "The ultimate football experience with realistic gameplay, updated rosters, and exciting new game modes for solo and multiplayer.",
-            imageUrl = "https://picsum.photos/400/600?random=6",
-            price = 69.99,
-            rating = 4.2,
-            releaseDate = "2024-02-10",
-            category = GameCategory.SPORTS,
-            platform = PlatformEnum.PC,
-            genres = listOf("Sports", "Simulation", "Multiplayer")
-        ),
-        Game(
-            id = 7,
-            title = "Civilization VI",
-            description = "Build an empire to stand the test of time. Lead your civilization from the Stone Age to the Information Age in this turn-based strategy masterpiece.",
-            imageUrl = "https://picsum.photos/400/600?random=7",
-            price = 29.99,
-            rating = 4.6,
-            releaseDate = "2023-10-20",
-            category = GameCategory.STRATEGY,
-            platform = PlatformEnum.PC,
-            genres = listOf("Strategy", "Turn-Based", "Historical")
-        ),
-        Game(
-            id = 8,
-            title = "Tetris Effect",
-            description = "Experience Tetris like never before with stunning visuals and an incredible soundtrack that reacts to your gameplay in real-time.",
-            imageUrl = "https://picsum.photos/400/600?random=8",
-            price = 19.99,
-            rating = 4.4,
-            releaseDate = "2024-01-05",
-            category = GameCategory.PUZZLE,
-            platform = PlatformEnum.MOBILE,
-            genres = listOf("Puzzle", "Music", "Casual")
-        ),
-        Game(
-            id = 9,
-            title = "Elden Ring",
-            description = "From FromSoftware and George R.R. Martin comes a dark fantasy epic. Explore a vast interconnected world filled with danger and mystery.",
-            imageUrl = "https://picsum.photos/400/600?random=9",
-            price = 59.99,
-            rating = 4.9,
-            releaseDate = "2024-01-25",
+            releaseDate = "2025-04-24",
             category = GameCategory.RPG,
-            platform = PlatformEnum.PLAYSTATION,
-            genres = listOf("RPG", "Souls-like", "Dark Fantasy")
+            platforms = listOf(platforms[0], platforms[1], platforms[5]), // PC, PS5, Xbox Series
+            genres = listOf(genres[4]), // RPG
+            stores = listOf(stores[0], stores[2], stores[1], stores[9]), // Steam, PS Store, Xbox Store, Epic
+            tags = listOf(tags[0], tags[4], tags[7], tags[15], tags[10]),
+            screenshots = listOf(
+                Screenshot(
+                    -1,
+                    "https://media.rawg.io/media/games/466/4667f17fdee9ebbcea2049e54f8e2b96.jpg"
+                ),
+                Screenshot(
+                    4052553,
+                    "https://media.rawg.io/media/screenshots/1e4/1e4dcb884c03242be7dab30fad77d7b2.jpg"
+                ),
+                Screenshot(
+                    4161703,
+                    "https://media.rawg.io/media/screenshots/22c/22c350e84e9f320b389cdabf0c213f7f.jpg"
+                )
+            ),
+            metacritic = null,
+            playtime = 25,
+            ratingsCount = 355,
+            esrbRating = null
         ),
         Game(
-            id = 10,
-            title = "Forza Horizon 5",
-            description = "Open-world racing in beautiful Mexico. Drive hundreds of the world's greatest cars through stunning environments and dynamic seasons.",
-            imageUrl = "https://picsum.photos/400/600?random=10",
-            price = 49.99,
-            rating = 4.7,
-            releaseDate = "2023-12-15",
-            category = GameCategory.SPORTS,
-            platform = PlatformEnum.XBOX,
-            genres = listOf("Racing", "Open World", "Arcade")
+            id = 994603,
+            slug = "split-fiction",
+            title = "Split Fiction",
+            description = "A unique cooperative adventure from the creators of It Takes Two. Experience a story-rich journey that seamlessly blends action and adventure in innovative ways.",
+            imageUrl = "https://media.rawg.io/media/games/02a/02ac22b3b90717dabaa535640c38534c.jpg",
+            price = 39.99,
+            rating = 4.47,
+            releaseDate = "2025-03-06",
+            category = GameCategory.ADVENTURE,
+            platforms = listOf(platforms[0], platforms[1], platforms[5]), // PC, PS5, Xbox Series
+            genres = listOf(genres[2], genres[3]), // Adventure, Action
+            stores = listOf(stores[0], stores[2], stores[9]), // Steam, PS Store, Epic
+            tags = listOf(tags[6], tags[10], tags[7], tags[1], tags[9]),
+            screenshots = listOf(
+                Screenshot(
+                    -1,
+                    "https://media.rawg.io/media/games/02a/02ac22b3b90717dabaa535640c38534c.jpg"
+                ),
+                Screenshot(
+                    4137937,
+                    "https://media.rawg.io/media/screenshots/dc1/dc10dd68a2e7472b7ed40feda3a16c54.jpg"
+                ),
+                Screenshot(
+                    4137938,
+                    "https://media.rawg.io/media/screenshots/ea9/ea9e37dc1b36db3401a6b308d766198b.jpg"
+                )
+            ),
+            metacritic = null,
+            playtime = 3,
+            ratingsCount = 189,
+            esrbRating = null
         ),
         Game(
-            id = 11,
-            title = "Minecraft",
-            description = "Create and explore infinite worlds. Build anything you can imagine in this blocky sandbox adventure that has captured millions of players.",
-            imageUrl = "https://picsum.photos/400/600?random=11",
-            price = 26.95,
-            rating = 4.8,
-            releaseDate = "2023-11-12",
-            category = GameCategory.SIMULATION,
-            platform = PlatformEnum.MOBILE,
-            genres = listOf("Sandbox", "Survival", "Creative")
+            id = 801122,
+            slug = "the-alters",
+            title = "The Alters",
+            description = "A thought-provoking sci-fi strategy adventure. Make critical decisions, build your base, and explore a mysterious alien world while managing alternate versions of yourself.",
+            imageUrl = "https://media.rawg.io/media/games/5f8/5f8b6e0bfdf4efd5e2b9231df8721de0.jpg",
+            price = 34.99,
+            rating = 4.36,
+            releaseDate = "2025-06-13",
+            category = GameCategory.STRATEGY,
+            platforms = listOf(platforms[0], platforms[1], platforms[5]), // PC, PS5, Xbox Series
+            genres = listOf(genres[2]), // Adventure
+            stores = listOf(stores[0], stores[2], stores[1], stores[5]), // Steam, PS Store, Xbox Store, GOG
+            tags = listOf(tags[0], tags[7], tags[4], tags[16], tags[13]),
+            screenshots = listOf(
+                Screenshot(
+                    -1,
+                    "https://media.rawg.io/media/games/5f8/5f8b6e0bfdf4efd5e2b9231df8721de0.jpg"
+                ),
+                Screenshot(
+                    4020091,
+                    "https://media.rawg.io/media/screenshots/eda/eda60996530ac10e728ebb894c2b4406.jpg"
+                ),
+                Screenshot(
+                    4020092,
+                    "https://media.rawg.io/media/screenshots/4a9/4a98d51ad9c428e397954b03412d3433.jpg"
+                )
+            ),
+            metacritic = null,
+            playtime = 7,
+            ratingsCount = 68,
+            esrbRating = null
         ),
         Game(
-            id = 12,
-            title = "Call of Duty: MW3",
-            description = "The iconic FPS returns with intense multiplayer action and a gripping campaign. Join the fight in the latest Modern Warfare installment.",
-            imageUrl = "https://picsum.photos/400/600?random=12",
-            price = 69.99,
-            rating = 4.3,
-            releaseDate = "2024-02-05",
+            id = 292844,
+            slug = "hollow-knight-silksong",
+            title = "Hollow Knight: Silksong",
+            description = "Descend into a haunting new kingdom as Hornet in this eagerly awaited sequel. Master acrobatic combat, explore vast interconnected worlds, and uncover the secrets of Silksong.",
+            imageUrl = "https://media.rawg.io/media/games/27c/27cd8b7dead05a870f8a514a9a1915ad.jpg",
+            price = 34.99,
+            rating = 4.35,
+            releaseDate = "2025-09-04",
             category = GameCategory.ACTION,
-            platform = PlatformEnum.PC,
-            genres = listOf("FPS", "Military", "Multiplayer")
+            platforms = listOf(platforms[0], platforms[1], platforms[3], platforms[7], platforms[4], platforms[5]), // PC, PS5, PS4, Switch, macOS, Xbox
+            genres = listOf(genres[0], genres[10], genres[2], genres[3]), // Indie, Platformer, Adventure, Action
+            stores = listOf(stores[0], stores[5]), // Steam, GOG
+            tags = listOf(tags[0], tags[4], tags[7], tags[2], tags[5]),
+            screenshots = listOf(
+                Screenshot(
+                    -1,
+                    "https://media.rawg.io/media/games/27c/27cd8b7dead05a870f8a514a9a1915ad.jpg"
+                ),
+                Screenshot(
+                    1837511,
+                    "https://media.rawg.io/media/screenshots/9f9/9f9a0edd1478facde5209abe4000c015.jpg"
+                ),
+                Screenshot(
+                    1837512,
+                    "https://media.rawg.io/media/screenshots/3f3/3f35cf2130d1d8763ee45dc77ce843b2.jpg"
+                )
+            ),
+            metacritic = null,
+            playtime = 22,
+            ratingsCount = 202,
+            esrbRating = null
+        ),
+        Game(
+            id = 983381,
+            slug = "doom-the-dark-ages",
+            title = "Doom: The Dark Ages",
+            description = "Return to medieval times in this brutal prequel to the legendary FPS series. Unleash hell with devastating weapons and face hordes of demons in an epic dark fantasy setting.",
+            imageUrl = "https://media.rawg.io/media/games/018/01897340a06b9ed8e92ed1cc1b1eecb9.jpg",
+            price = 59.99,
+            rating = 4.35,
+            releaseDate = "2025-05-15",
+            category = GameCategory.ACTION,
+            platforms = listOf(platforms[0], platforms[1], platforms[5]), // PC, PS5, Xbox Series
+            genres = listOf(genres[3]), // Action
+            stores = listOf(stores[0], stores[2], stores[1]), // Steam, PS Store, Xbox Store
+            tags = listOf(tags[0], tags[4], tags[7], tags[11], tags[12]),
+            screenshots = listOf(
+                Screenshot(
+                    -1,
+                    "https://media.rawg.io/media/games/018/01897340a06b9ed8e92ed1cc1b1eecb9.jpg"
+                ),
+                Screenshot(
+                    4053759,
+                    "https://media.rawg.io/media/screenshots/8f1/8f19f2c0d824633e97bfe32117a8cdd1.jpg"
+                ),
+                Screenshot(
+                    4053760,
+                    "https://media.rawg.io/media/screenshots/5b4/5b47eb35a77ed3dbdc0f7854268666a7.jpg"
+                )
+            ),
+            metacritic = null,
+            playtime = 16,
+            ratingsCount = 68,
+            esrbRating = EsrbRating(4, "Mature", "mature")
+        ),
+        Game(
+            id = 1008166,
+            slug = "ball-x-pit",
+            title = "Ball x Pit",
+            description = "A fast-paced action roguelike where you build your arsenal and craft your base while battling through waves of enemies. Pixel art graphics meet addictive gameplay in this indie gem.",
+            imageUrl = "https://media.rawg.io/media/games/798/798705b4f25e958e4ab8edf570e215f8.jpg",
+            price = 14.99,
+            rating = 4.38,
+            releaseDate = "2025-10-15",
+            category = GameCategory.ACTION,
+            platforms = listOf(platforms[0], platforms[7], platforms[4]), // PC, Switch, macOS
+            genres = listOf(genres[0], genres[3]), // Indie, Action
+            stores = listOf(stores[0]), // Steam
+            tags = listOf(tags[4], tags[7], tags[2], tags[1], tags[5]),
+            screenshots = listOf(
+                Screenshot(
+                    -1,
+                    "https://media.rawg.io/media/games/798/798705b4f25e958e4ab8edf570e215f8.jpg"
+                ),
+                Screenshot(
+                    4271792,
+                    "https://media.rawg.io/media/screenshots/592/592546d38aa4b289309d9d506c2c59e4.jpg"
+                ),
+                Screenshot(
+                    4271793,
+                    "https://media.rawg.io/media/screenshots/f5d/f5dcf68bf10a1035375c362858c0195b.jpg"
+                )
+            ),
+            metacritic = null,
+            playtime = 6,
+            ratingsCount = 32,
+            esrbRating = null
+        ),
+        Game(
+            id = 980502,
+            slug = "kingdom-come-deliverance-ii",
+            title = "Kingdom Come: Deliverance II",
+            description = "Return to medieval Bohemia in this realistic RPG sequel. Experience authentic historical combat, make impactful choices, and explore a vast open world filled with detail.",
+            imageUrl = "https://media.rawg.io/media/games/d84/d842fec4ae7bbd782d330f678c980f7f.jpg",
+            price = 59.99,
+            rating = 4.4,
+            releaseDate = "2025-02-03",
+            category = GameCategory.RPG,
+            platforms = listOf(platforms[0], platforms[1], platforms[5]), // PC, PS5, Xbox Series
+            genres = listOf(genres[2], genres[3], genres[4]), // Adventure, Action, RPG
+            stores = listOf(stores[0], stores[5]), // Steam, GOG
+            tags = listOf(tags[0], tags[4], tags[7], tags[2], tags[17]),
+            screenshots = listOf(
+                Screenshot(
+                    -1,
+                    "https://media.rawg.io/media/games/d84/d842fec4ae7bbd782d330f678c980f7f.jpg"
+                ),
+                Screenshot(
+                    4152948,
+                    "https://media.rawg.io/media/screenshots/9a8/9a8ecc33989862e3be29132189c3f7f6.jpg"
+                ),
+                Screenshot(
+                    4152949,
+                    "https://media.rawg.io/media/screenshots/741/741f7625ce8adfe138b43608f1e8e01c.jpg"
+                )
+            ),
+            metacritic = null,
+            playtime = 26,
+            ratingsCount = 127,
+            esrbRating = EsrbRating(5, "Adults Only", "adults-only")
+        ),
+        Game(
+            id = 891238,
+            slug = "hades-ii",
+            title = "Hades II",
+            description = "The acclaimed roguelike returns! Battle through the Underworld as Melinoë, wielding magic and might. Stunning hand-drawn art, addictive gameplay, and rich storytelling await.",
+            imageUrl = "https://media.rawg.io/media/games/8fd/8fd2e8317849fd265ad8781c324d4ec2.jpg",
+            price = 29.99,
+            rating = 4.32,
+            releaseDate = "2025-09-25",
+            category = GameCategory.ACTION,
+            platforms = listOf(platforms[0], platforms[7]), // PC, Switch
+            genres = listOf(genres[0], genres[2], genres[3], genres[4]), // Indie, Adventure, Action, RPG
+            stores = listOf(stores[0], stores[9]), // Steam, Epic
+            tags = listOf(tags[0], tags[4], tags[7], tags[2], tags[3]),
+            screenshots = listOf(
+                Screenshot(
+                    -1,
+                    "https://media.rawg.io/media/games/8fd/8fd2e8317849fd265ad8781c324d4ec2.jpg"
+                ),
+                Screenshot(
+                    3681385,
+                    "https://media.rawg.io/media/screenshots/59e/59e9ba1215b11e43ad64f363bfb7f65b.jpg"
+                ),
+                Screenshot(
+                    3681386,
+                    "https://media.rawg.io/media/screenshots/e93/e93aa58a1bf6f628507121a206ef856d.jpg"
+                )
+            ),
+            metacritic = null,
+            playtime = 7,
+            ratingsCount = 98,
+            esrbRating = null
         )
     )
 }

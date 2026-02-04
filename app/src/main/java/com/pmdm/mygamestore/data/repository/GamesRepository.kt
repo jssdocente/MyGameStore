@@ -24,29 +24,14 @@ interface GamesRepository {
     fun getAllGames(): Flow<Resource<List<Game>>>
 
     /**
-     * Filtra juegos por categoría
+     * Busca juegos combinando múltiples criterios de filtrado
      */
-    fun getGamesByCategory(category: GameCategory): Flow<Resource<List<Game>>>
-
-    /**
-     * Filtra juegos por intervalo de fecha de lanzamiento
-     */
-    fun getGamesByInterval(interval: DateInterval): Flow<Resource<List<Game>>>
-
-    /**
-     * Filtra juegos por plataforma
-     */
-    fun getGamesByPlatform(platform: PlatformEnum): Flow<Resource<List<Game>>>
-
-    /**
-     * Filtra juegos por géneros
-     */
-    fun getGamesByGenres(genres: List<String>): Flow<Resource<List<Game>>>
-
-    /**
-     * Busca juegos por texto en título o descripción
-     */
-    fun searchGames(query: String): Flow<Resource<List<Game>>>
+    fun getFilteredGames(
+        query: String = "",
+        category: GameCategory = GameCategory.ALL,
+        platform: PlatformEnum = PlatformEnum.ALL,
+        interval: DateInterval = DateInterval.ALL_TIME
+    ): Flow<Resource<List<Game>>>
 
     /**
      * Obtiene un juego específico por su ID

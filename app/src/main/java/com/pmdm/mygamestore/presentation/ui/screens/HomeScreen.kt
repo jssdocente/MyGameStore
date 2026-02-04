@@ -1,49 +1,61 @@
 package com.pmdm.mygamestore.presentation.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation3.runtime.NavBackStack
+import androidx.compose.ui.unit.sp
 import com.pmdm.mygamestore.data.repository.SessionManagerImpl
 import com.pmdm.mygamestore.domain.model.GameCategory
 import com.pmdm.mygamestore.presentation.ui.componentes.BottomNavigationBar
-import com.pmdm.mygamestore.presentation.ui.componentes.CategoryChipsRow
-import com.pmdm.mygamestore.presentation.ui.componentes.TextFieldGS
+import com.pmdm.mygamestore.presentation.ui.componentes.FilterSystem
+import com.pmdm.mygamestore.presentation.ui.componentes.EmptyState
+import com.pmdm.mygamestore.presentation.ui.componentes.ErrorMessage
+import com.pmdm.mygamestore.presentation.ui.componentes.GameGrid
+import com.pmdm.mygamestore.presentation.ui.componentes.LoadingIndicator
 import com.pmdm.mygamestore.presentation.ui.navigation.AppRoutes
 import com.pmdm.mygamestore.presentation.ui.navigation.LocalNavStack
-import com.pmdm.mygamestore.presentation.ui.theme.dimens
+import com.pmdm.mygamestore.presentation.viewmodel.HomeViewModel
+import com.pmdm.mygamestore.presentation.viewmodel.HomeViewModelFactory
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,30 +64,103 @@ fun HomeScreen() {
     // Navegación
     val navStack = LocalNavStack.current
 
-    // Para logout (DEBUG)
+    // Contexto y ViewModel
     val context = LocalContext.current
+    val viewModel: HomeViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = HomeViewModelFactory(context)
+    )
+
+    // Estado UI
+    val uiState by viewModel.uiState.collectAsState()
+
+    // Para logout (DEBUG)
     val sessionManager = remember { SessionManagerImpl(context) }
     val scope = rememberCoroutineScope()
 
-    // Estado de búsqueda y filtros (temporal, luego vendrá del ViewModel)
-    var searchQuery by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf(GameCategory.ALL) }
+    // Focus para búsqueda
+    val focusRequester = remember { FocusRequester() }
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { 
-                    Text(
-                        "Game Store",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold
-                    ) 
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            if (uiState.isSearchMode) {
+                TopAppBar(
+                    title = {
+                        TextField(
+                            value = uiState.searchQuery,
+                            onValueChange = { viewModel.onSearchQueryChange(it) },
+                            placeholder = {
+                                Text(
+                                    "Search games...",
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                                )
+                            },
+                            singleLine = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .focusRequester(focusRequester),
+                            colors = TextFieldDefaults.colors(
+                                focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                cursorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            )
+                        )
+                        LaunchedEffect(Unit) {
+                            focusRequester.requestFocus()
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { viewModel.toggleSearchMode() }) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Close search"
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 )
-            )
+            } else {
+                TopAppBar(
+                    title = {
+                        Text(
+                            "Game Store",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { viewModel.toggleFilterVisibility() }) {
+                            Icon(
+                                imageVector = Icons.Default.FilterList,
+                                contentDescription = "Toggle filters",
+                                tint = if (uiState.isFilterVisible) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { viewModel.toggleSearchMode() }) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search"
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                )
+            }
         },
         bottomBar = {
             BottomNavigationBar(
@@ -95,66 +180,85 @@ fun HomeScreen() {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Barra de búsqueda
-            TextFieldGS(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                placeholder = "Search games...",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                singleLine = true
-            )
+            // Sistema de filtros animado debajo de la TopBar
+            AnimatedVisibility(
+                visible = uiState.isFilterVisible,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                FilterSystem(
+                    selectedCategory = uiState.selectedCategory,
+                    onCategorySelected = { viewModel.onCategorySelected(it) },
+                    selectedPlatform = uiState.selectedPlatform,
+                    onPlatformSelected = { viewModel.onPlatformSelected(it) },
+                    selectedInterval = uiState.selectedInterval,
+                    onIntervalSelected = { viewModel.onIntervalSelected(it) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                )
+            }
 
-            // Fila de filtros de categoría
-            CategoryChipsRow(
-                selectedCategory = selectedCategory,
-                onCategorySelected = { selectedCategory = it },
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-
-            // Contenido principal (por ahora placeholder)
+            // Contenido principal con gestión de estados
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
+                    .weight(1f)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Text(
-                        text = "🎮 Home Screen Ready",
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-
-                    Text(
-                        text = "Search: ${searchQuery.ifEmpty { "None" }}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-
-                    Text(
-                        text = "Category: ${selectedCategory.name}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-
-                    // Botón de Logout (DEBUG)
-                    Button(
-                        onClick = {
-                            scope.launch {
-                                sessionManager.clearSession()
-                                navStack.clear()
-                                navStack.add(AppRoutes.Login)
-                            }
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red.copy(alpha = 0.7f),
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text("🚪 Logout (DEBUG)")
+                when {
+                    // Estado: Loading
+                    uiState.isLoading -> {
+                        LoadingIndicator()
                     }
+
+                    // Estado: Error
+                    uiState.errorMessage != null -> {
+                        ErrorMessage(
+                            message = uiState.errorMessage!!,
+                            onRetry = { viewModel.refreshGames() }
+                        )
+                    }
+
+                    // Estado: Empty (sin resultados)
+                    uiState.games.isEmpty() -> {
+                        EmptyState(
+                            message = "No games found",
+                            onClearFilters = if (uiState.searchQuery.isNotEmpty() || 
+                                uiState.selectedCategory != GameCategory.ALL) {
+                                { viewModel.clearAllFilters() }
+                            } else null
+                        )
+                    }
+
+                    // Estado: Success (mostrar juegos)
+                    else -> {
+                        GameGrid(
+                            games = uiState.games,
+                            onGameClick = { gameId ->
+                                navStack.add(AppRoutes.Detail(gameId))
+                            }
+                        )
+                    }
+                }
+
+                // Botón de Logout (DEBUG) - Flotante en la esquina
+                Button(
+                    onClick = {
+                        scope.launch {
+                            sessionManager.clearSession()
+                            navStack.clear()
+                            navStack.add(AppRoutes.Login)
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red.copy(alpha = 0.7f),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("🚪 Logout")
                 }
             }
         }
