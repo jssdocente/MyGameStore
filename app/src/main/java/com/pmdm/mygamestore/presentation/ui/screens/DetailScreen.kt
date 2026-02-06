@@ -30,6 +30,7 @@ import com.pmdm.mygamestore.data.repository.SessionManagerImpl
 import com.pmdm.mygamestore.domain.model.AppError
 import com.pmdm.mygamestore.domain.model.Game
 import com.pmdm.mygamestore.domain.model.Resource
+import com.pmdm.mygamestore.domain.model.GameProgress
 import com.pmdm.mygamestore.domain.usecase.GameUseCases
 import com.pmdm.mygamestore.presentation.ui.componentes.*
 import com.pmdm.mygamestore.presentation.ui.theme.dimens
@@ -82,9 +83,11 @@ fun DetailScreen(
                     DetailContent(
                         game = resource.data,
                         isFavorite = uiState.isFavorite,
+                        isInWishlist = uiState.isInWishlist,
                         note = uiState.note,
                         progressStatus = uiState.progressStatus,
                         onToggleFavorite = { viewModel.toggleFavorite() },
+                        onToggleWishlist = { viewModel.toggleWishlist() },
                         onSaveNote = { note, status -> viewModel.saveNote(note, status) }
                     )
                 }
@@ -97,10 +100,12 @@ fun DetailScreen(
 fun DetailContent(
     game: Game,
     isFavorite: Boolean,
+    isInWishlist: Boolean,
     note: String,
-    progressStatus: String,
+    progressStatus: GameProgress,
     onToggleFavorite: () -> Unit,
-    onSaveNote: (String, String) -> Unit
+    onToggleWishlist: () -> Unit,
+    onSaveNote: (String, GameProgress) -> Unit
 ) {
     var showNoteDialog by remember { mutableStateOf(false) }
     var noteText by remember(note) { mutableStateOf(note) }
@@ -144,17 +149,49 @@ fun DetailContent(
                     modifier = Modifier.weight(1f)
                 )
 
-                IconButton(
-                    onClick = onToggleFavorite,
-                    modifier = Modifier
-                        .size(MaterialTheme.dimens.buttonHeightLarge)
-                        .clip(RoundedCornerShape(MaterialTheme.dimens.medium))
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "Favorite",
-                        tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    // Botón Wishlist
+                    IconButton(
+                        onClick = onToggleWishlist,
+                        modifier = Modifier
+                            .size(MaterialTheme.dimens.buttonHeightLarge)
+                            .clip(RoundedCornerShape(MaterialTheme.dimens.medium))
+                            .background(
+                                if (isInWishlist) MaterialTheme.colorScheme.secondaryContainer
+                                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                            )
+                    ) {
+                        Icon(
+                            imageVector = if (isInWishlist) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                            contentDescription = "Wishlist",
+                            tint = if (isInWishlist) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    // Botón Favorito
+                    IconButton(
+                        onClick = {
+                            println("[DEBUG_LOG] DetailScreen: Favorite button clicked")
+                            onToggleFavorite()
+                        },
+                        modifier = Modifier
+                            .size(MaterialTheme.dimens.buttonHeightLarge)
+                            .clip(RoundedCornerShape(MaterialTheme.dimens.medium))
+                            .background(
+                                if (isFavorite) MaterialTheme.colorScheme.primaryContainer
+                                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                            )
+                    ) {
+                        println("[DEBUG_LOG] DetailScreen: Rendering heart icon, isFavorite=$isFavorite")
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = "Favorite",
+                            tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
 
@@ -201,7 +238,7 @@ fun DetailContent(
                     
                     SuggestionChip(
                         onClick = { showNoteDialog = true },
-                        label = { Text(progressStatus) },
+                        label = { Text(progressStatus.displayName) },
                         modifier = Modifier.padding(top = MaterialTheme.dimens.small)
                     )
                 }
@@ -340,13 +377,16 @@ fun DetailContent(
                     )
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.medium))
                     Text("Status", style = MaterialTheme.typography.labelLarge)
-                    val statuses = listOf("PENDING", "PLAYING", "COMPLETED", "ABANDONED")
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    val statuses = GameProgress.values()
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         statuses.forEach { status ->
                             FilterChip(
                                 selected = selectedStatus == status,
                                 onClick = { selectedStatus = status },
-                                label = { Text(status, fontSize = 10.sp) }
+                                label = { Text(status.displayName, fontSize = 10.sp) }
                             )
                         }
                     }

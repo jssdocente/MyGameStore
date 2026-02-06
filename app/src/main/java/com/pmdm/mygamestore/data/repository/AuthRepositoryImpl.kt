@@ -46,6 +46,17 @@ class AuthRepositoryImpl : AuthRepository {
 
         // Validar credenciales
         return if (validUsers[username] == password) {
+            // Persistir perfil básico en Room si no existe
+            val userData = registeredUsers[username]
+            if (userData != null) {
+                db.userDao().insertUser(
+                    UserEntity(
+                        username = userData.username,
+                        name = userData.username.replaceFirstChar { it.uppercase() },
+                        email = userData.email
+                    )
+                )
+            }
             LoginResult.Success(username = username)
         } else {
             LoginResult.Error(message = "Invalid username or password")
@@ -77,9 +88,18 @@ class AuthRepositoryImpl : AuthRepository {
             return RegisterResult.Error("Email already registered")
         }
 
-        // Registrar nuevo usuario
+        // Registrar nuevo usuario en el mapa (simulado)
         registeredUsers[username] = UserData(username, email, password)
         validUsers[username] = password
+
+        // Persistir en Room (real)
+        db.userDao().insertUser(
+            UserEntity(
+                username = username,
+                name = username.replaceFirstChar { it.uppercase() },
+                email = email
+            )
+        )
 
         return RegisterResult.Success(username = username)
     }

@@ -6,17 +6,21 @@ import androidx.lifecycle.viewModelScope
 import com.pmdm.mygamestore.domain.usecase.GameUseCases
 import com.pmdm.mygamestore.domain.model.Game
 import com.pmdm.mygamestore.domain.model.Resource
+import com.pmdm.mygamestore.domain.model.AppError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+import com.pmdm.mygamestore.domain.model.GameProgress
+
 data class DetailUiState(
     val gameResource: Resource<Game> = Resource.Loading,
     val isFavorite: Boolean = false,
+    val isInWishlist: Boolean = false,
     val note: String = "",
-    val progressStatus: String = "PENDING"
+    val progressStatus: GameProgress = GameProgress.PENDING
 )
 
 class DetailViewModel(
@@ -29,8 +33,9 @@ class DetailViewModel(
 
     init {
         loadGame()
-        checkIfFavorite()
-        loadNote()
+        observeFavoriteStatus()
+        observeWishlistStatus()
+        loadNoteAndProgress()
         addToRecent()
     }
 
@@ -42,17 +47,33 @@ class DetailViewModel(
         }
     }
 
-    private fun checkIfFavorite() {
+    private fun observeFavoriteStatus() {
         viewModelScope.launch {
-            val favorite = useCases.isFavorite(gameId)
-            _uiState.update { it.copy(isFavorite = favorite) }
+            println("[DEBUG_LOG] DetailViewModel: Starting observation of isFavorite for gameId $gameId")
+            useCases.isFavorite(gameId).collect { favorite ->
+                println("[DEBUG_LOG] DetailViewModel: Received isFavorite emission for gameId $gameId: $favorite")
+                _uiState.update { it.copy(isFavorite = favorite) }
+            }
         }
     }
 
-    private fun loadNote() {
+    private fun observeWishlistStatus() {
+        viewModelScope.launch {
+            useCases.isInWishlist(gameId).collect { inWishlist ->
+                _uiState.update { it.copy(isInWishlist = inWishlist) }
+            }
+        }
+    }
+
+    private fun loadNoteAndProgress() {
         viewModelScope.launch {
             useCases.getNoteForGame(gameId).collect { note ->
                 _uiState.update { it.copy(note = note ?: "") }
+            }
+        }
+        viewModelScope.launch {
+            useCases.getProgressForGame(gameId).collect { progress ->
+                _uiState.update { it.copy(progressStatus = progress) }
             }
         }
     }
@@ -65,14 +86,28 @@ class DetailViewModel(
 
     fun toggleFavorite() {
         viewModelScope.launch {
+            println("[DEBUG_LOG] DetailViewModel: Calling toggleFavorite for gameId $gameId")
             val result = useCases.toggleFavorite(gameId)
-            if (result is Resource.Success) {
-                checkIfFavorite()
+            if (result is Resource.Error) {
+                val errorMsg = when(val error = result.error) {
+                    is AppError.Unknown -> error.message
+                    is AppError.DatabaseError -> error.message
+                    else -> error.toString()
+                }
+                println("[DEBUG_LOG] DetailViewModel: toggleFavorite FAILED: $errorMsg")
+            } else {
+                println("[DEBUG_LOG] DetailViewModel: toggleFavorite call finished successfully")
             }
         }
     }
 
-    fun saveNote(note: String, status: String) {
+    fun toggleWishlist() {
+        viewModelScope.launch {
+            useCases.toggleWishlist(gameId)
+        }
+    }
+
+    fun saveNote(note: String, status: GameProgress) {
         viewModelScope.launch {
             useCases.saveNoteForGame(gameId, note, status)
             _uiState.update { it.copy(note = note, progressStatus = status) }

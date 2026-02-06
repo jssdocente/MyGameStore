@@ -4,6 +4,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 
+import com.pmdm.mygamestore.domain.model.LibraryStatus
+
 @Entity(
     tableName = "library",
     primaryKeys = ["username", "gameId"],
@@ -21,5 +23,5 @@ data class LibraryEntity(
     val username: String,
     val gameId: Int,
     val addedDate: Long,
-    val status: String // FAVORITE, WISHLIST, OWNED
+    val status: LibraryStatus // Ahora es Enum
 )

@@ -17,6 +17,7 @@ import com.pmdm.mygamestore.data.local.entities.*
     version = 1,
     exportSchema = false
 )
+@TypeConverters(RoomConverters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun libraryDao(): LibraryDao

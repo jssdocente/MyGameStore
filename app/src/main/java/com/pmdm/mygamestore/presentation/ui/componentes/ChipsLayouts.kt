@@ -1,6 +1,7 @@
 package com.pmdm.mygamestore.presentation.ui.componentes
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +33,28 @@ fun TagsFlowRow(
     ) {
         items.forEach { item ->
             DetailChip(item)
+        }
+    }
+}
+
+/**
+ * Fila de géneros en formato etiquetas pequeñas.
+ */
+@Composable
+fun GenreChipsRow(
+    genres: List<String>,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        genres.take(3).forEach { genre ->
+            DetailChip(
+                label = genre,
+                containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f)
+            )
         }
     }
 }

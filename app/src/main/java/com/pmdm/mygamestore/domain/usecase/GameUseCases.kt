@@ -6,6 +6,8 @@ import com.pmdm.mygamestore.domain.model.GameCategory
 import com.pmdm.mygamestore.domain.model.DateInterval
 import com.pmdm.mygamestore.domain.model.PlatformEnum
 import com.pmdm.mygamestore.domain.model.Resource
+import com.pmdm.mygamestore.domain.model.LibraryStatus
+import com.pmdm.mygamestore.domain.model.GameProgress
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -150,13 +152,20 @@ class GameUseCases(
     /**
      *  UC-009: Gestiona favoritos y biblioteca
      */
-    fun getLibraryGames(): Flow<Resource<List<Game>>> = gamesRepository.getLibraryGames()
+    fun getLibraryGames(status: LibraryStatus = LibraryStatus.ALL): Flow<Resource<List<Game>>> = 
+        gamesRepository.getLibraryGames(status)
 
     fun getFavoriteGames(): Flow<Resource<List<Game>>> = gamesRepository.getFavoriteGames()
 
     suspend fun toggleFavorite(gameId: Int): Resource<Unit> = gamesRepository.toggleFavorite(gameId)
 
-    suspend fun isFavorite(gameId: Int): Boolean = gamesRepository.isFavorite(gameId)
+    fun isFavorite(gameId: Int): Flow<Boolean> = gamesRepository.isFavorite(gameId)
+
+    suspend fun toggleWishlist(gameId: Int): Resource<Unit> = gamesRepository.toggleWishlist(gameId)
+
+    fun isInWishlist(gameId: Int): Flow<Boolean> = gamesRepository.isInWishlist(gameId)
+
+    suspend fun removeFromLibrary(gameId: Int): Resource<Unit> = gamesRepository.removeFromLibrary(gameId)
 
     /**
      *  UC-010: Historial y Notas
@@ -171,6 +180,8 @@ class GameUseCases(
 
     fun getNoteForGame(gameId: Int): Flow<String?> = gamesRepository.getNoteForGame(gameId)
 
-    suspend fun saveNoteForGame(gameId: Int, note: String, status: String) =
+    fun getProgressForGame(gameId: Int): Flow<GameProgress> = gamesRepository.getProgressForGame(gameId)
+
+    suspend fun saveNoteForGame(gameId: Int, note: String, status: GameProgress) =
         gamesRepository.saveNoteForGame(gameId, note, status)
 }

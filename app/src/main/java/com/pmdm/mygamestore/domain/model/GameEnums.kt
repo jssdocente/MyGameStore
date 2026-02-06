@@ -44,3 +44,24 @@ enum class DateInterval {
     LAST_30_DAYS,  // Último mes
     LAST_90_DAYS   // Últimos 3 meses
 }
+
+/**
+ * Estados posibles de un juego en la biblioteca del usuario.
+ */
+enum class LibraryStatus(val displayName: String) {
+    ALL("Todos"),
+    FAVORITE("Favoritos"),
+    WISHLIST("Deseados"),
+    OWNED("En propiedad"),
+    NONE("Ninguno")
+}
+
+/**
+ * Estados de progreso del juego para las notas personales.
+ */
+enum class GameProgress(val displayName: String) {
+    PENDING("Pendiente"),
+    PLAYING("Jugando"),
+    COMPLETED("Completado"),
+    ABANDONED("Abandonado")
+}

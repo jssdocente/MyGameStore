@@ -5,6 +5,8 @@ import com.pmdm.mygamestore.domain.model.GameCategory
 import com.pmdm.mygamestore.domain.model.DateInterval
 import com.pmdm.mygamestore.domain.model.PlatformEnum
 import com.pmdm.mygamestore.domain.model.Resource
+import com.pmdm.mygamestore.domain.model.LibraryStatus
+import com.pmdm.mygamestore.domain.model.GameProgress
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -40,13 +42,19 @@ interface GamesRepository {
 
     // --- Funcionalidades de Biblioteca y Favoritos (Room) ---
 
-    fun getLibraryGames(): Flow<Resource<List<Game>>>
+    fun getLibraryGames(status: LibraryStatus = LibraryStatus.ALL): Flow<Resource<List<Game>>>
     
     fun getFavoriteGames(): Flow<Resource<List<Game>>>
 
     suspend fun toggleFavorite(gameId: Int): Resource<Unit>
 
-    suspend fun isFavorite(gameId: Int): Boolean
+    fun isFavorite(gameId: Int): Flow<Boolean>
+
+    suspend fun toggleWishlist(gameId: Int): Resource<Unit>
+
+    fun isInWishlist(gameId: Int): Flow<Boolean>
+
+    suspend fun removeFromLibrary(gameId: Int): Resource<Unit>
 
     // --- Funcionalidades de Historial y Notas ---
 
@@ -60,5 +68,7 @@ interface GamesRepository {
 
     fun getNoteForGame(gameId: Int): Flow<String?>
 
-    suspend fun saveNoteForGame(gameId: Int, note: String, status: String)
+    fun getProgressForGame(gameId: Int): Flow<GameProgress>
+
+    suspend fun saveNoteForGame(gameId: Int, note: String, status: GameProgress)
 }

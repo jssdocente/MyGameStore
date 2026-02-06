@@ -44,7 +44,7 @@ import com.pmdm.mygamestore.domain.model.Platform
 /**
  * Mapea el slug de una plataforma a un icono de Material Design
  */
-private fun Platform.toIcon(): ImageVector {
+fun Platform.toIcon(): ImageVector {
     return when {
         slug.contains("pc", ignoreCase = true) -> Icons.Default.Window
         slug.contains("playstation", ignoreCase = true) -> Icons.Default.SportsEsports
