@@ -1,14 +1,18 @@
 package com.pmdm.mygamestore.data.repository
 
+import com.pmdm.mygamestore.MyGameStoreApp
+import com.pmdm.mygamestore.data.local.entities.UserEntity
 import kotlinx.coroutines.delay
 
 /**
- * 🔧 Implementación local del repositorio de autenticación
+ * 🔧 Implementación local del repositorio de autenticación con persistencia en Room
  *
- * Esta implementación valida credenciales contra una lista local.
- * Simula el comportamiento de una fuente de datos real con delay.
+ * Esta implementación valida credenciales contra una lista local y persiste
+ * el perfil del usuario en Room al registrarse o hacer login.
  */
 class AuthRepositoryImpl : AuthRepository {
+
+    private val db = MyGameStoreApp.database
 
     /**
      * Usuarios válidos para login (simulación local)

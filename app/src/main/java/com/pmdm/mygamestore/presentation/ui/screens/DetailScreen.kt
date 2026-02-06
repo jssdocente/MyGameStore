@@ -22,9 +22,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.pmdm.mygamestore.data.repository.MockGamesRepositoryImpl
+import com.pmdm.mygamestore.data.repository.SessionManagerImpl
 import com.pmdm.mygamestore.domain.model.AppError
 import com.pmdm.mygamestore.domain.model.Game
 import com.pmdm.mygamestore.domain.model.Resource
@@ -42,7 +44,7 @@ fun DetailScreen(
     viewModel: DetailViewModel = viewModel(
         key = "DetailViewModel_$gameId",
         factory = DetailViewModelFactory(
-            GameUseCases(MockGamesRepositoryImpl()),
+            GameUseCases(MockGamesRepositoryImpl(SessionManagerImpl(LocalContext.current))),
             gameId
         )
     )
@@ -74,13 +76,16 @@ fun DetailScreen(
                         is AppError.NetworkError -> resource.error.message
                         else -> "An unexpected error occurred"
                     },
-                    onRetry = { viewModel.loadGame() }
+                    onRetry = { /* viewModel.loadGame() se llama en init */ }
                 )
                 is Resource.Success -> {
                     DetailContent(
                         game = resource.data,
                         isFavorite = uiState.isFavorite,
-                        onToggleFavorite = { viewModel.toggleFavorite() }
+                        note = uiState.note,
+                        progressStatus = uiState.progressStatus,
+                        onToggleFavorite = { viewModel.toggleFavorite() },
+                        onSaveNote = { note, status -> viewModel.saveNote(note, status) }
                     )
                 }
             }
@@ -92,8 +97,15 @@ fun DetailScreen(
 fun DetailContent(
     game: Game,
     isFavorite: Boolean,
-    onToggleFavorite: () -> Unit
+    note: String,
+    progressStatus: String,
+    onToggleFavorite: () -> Unit,
+    onSaveNote: (String, String) -> Unit
 ) {
+    var showNoteDialog by remember { mutableStateOf(false) }
+    var noteText by remember(note) { mutableStateOf(note) }
+    var selectedStatus by remember(progressStatus) { mutableStateOf(progressStatus) }
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = MaterialTheme.dimens.medium)
@@ -142,6 +154,55 @@ fun DetailContent(
                         imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = "Favorite",
                         tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            // Sección de Notas y Estado
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(MaterialTheme.dimens.medium),
+                shape = RoundedCornerShape(MaterialTheme.dimens.medium),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                )
+            ) {
+                Column(modifier = Modifier.padding(MaterialTheme.dimens.medium)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "My Notes",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        IconButton(onClick = { showNoteDialog = true }) {
+                            Icon(Icons.Default.Edit, contentDescription = "Edit Note")
+                        }
+                    }
+                    
+                    if (note.isNotEmpty()) {
+                        Text(
+                            text = note,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(vertical = MaterialTheme.dimens.small)
+                        )
+                    } else {
+                        Text(
+                            text = "No notes added yet.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                            modifier = Modifier.padding(vertical = MaterialTheme.dimens.small)
+                        )
+                    }
+                    
+                    SuggestionChip(
+                        onClick = { showNoteDialog = true },
+                        label = { Text(progressStatus) },
+                        modifier = Modifier.padding(top = MaterialTheme.dimens.small)
                     )
                 }
             }
@@ -262,5 +323,48 @@ fun DetailContent(
                 )
             }
         }
+    }
+
+    if (showNoteDialog) {
+        AlertDialog(
+            onDismissRequest = { showNoteDialog = false },
+            title = { Text("Game Notes & Progress") },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = noteText,
+                        onValueChange = { noteText = it },
+                        label = { Text("Your Notes") },
+                        modifier = Modifier.fillMaxWidth(),
+                        minLines = 3
+                    )
+                    Spacer(modifier = Modifier.height(MaterialTheme.dimens.medium))
+                    Text("Status", style = MaterialTheme.typography.labelLarge)
+                    val statuses = listOf("PENDING", "PLAYING", "COMPLETED", "ABANDONED")
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        statuses.forEach { status ->
+                            FilterChip(
+                                selected = selectedStatus == status,
+                                onClick = { selectedStatus = status },
+                                label = { Text(status, fontSize = 10.sp) }
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    onSaveNote(noteText, selectedStatus)
+                    showNoteDialog = false
+                }) {
+                    Text("Save")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showNoteDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }

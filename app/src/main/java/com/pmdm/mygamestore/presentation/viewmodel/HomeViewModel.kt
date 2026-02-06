@@ -57,6 +57,7 @@ data class HomeUiState(
     val selectedCategory: GameCategory = GameCategory.ALL,
     val selectedPlatform: PlatformEnum = PlatformEnum.ALL,
     val selectedInterval: DateInterval = DateInterval.ALL_TIME,
+    val recentSearches: List<String> = emptyList()
 )
 
 /**
@@ -97,9 +98,9 @@ class HomeViewModel(
 ) : ViewModel() {
 
     //  Dependencias instanciadas directamente (temporal, antes de Koin)
-    private val gamesRepository: GamesRepository = MockGamesRepositoryImpl()
-    private val gameUseCases = GameUseCases(gamesRepository)
     private val sessionManager: SessionManager = SessionManagerImpl(context)
+    private val gamesRepository: GamesRepository = MockGamesRepositoryImpl(sessionManager)
+    private val gameUseCases = GameUseCases(gamesRepository)
 
     //  Estado privado mutable
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -110,6 +111,15 @@ class HomeViewModel(
     init {
         loadUsername()
         loadGames()
+        loadRecentSearches()
+    }
+
+    private fun loadRecentSearches() {
+        viewModelScope.launch {
+            gameUseCases.getRecentSearches().collect { searches ->
+                _uiState.update { it.copy(recentSearches = searches) }
+            }
+        }
     }
 
     private fun loadUsername() {
@@ -186,6 +196,11 @@ class HomeViewModel(
 
     fun onSearchQueryChange(query: String) {
         _uiState.update { it.copy(searchQuery = query) }
+        if (query.isNotBlank()) {
+            viewModelScope.launch {
+                gameUseCases.addSearchQuery(query)
+            }
+        }
         loadGames()
     }
 

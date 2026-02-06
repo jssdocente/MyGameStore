@@ -14,7 +14,9 @@ import kotlinx.coroutines.launch
 
 data class DetailUiState(
     val gameResource: Resource<Game> = Resource.Loading,
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    val note: String = "",
+    val progressStatus: String = "PENDING"
 )
 
 class DetailViewModel(
@@ -27,9 +29,12 @@ class DetailViewModel(
 
     init {
         loadGame()
+        checkIfFavorite()
+        loadNote()
+        addToRecent()
     }
 
-    fun loadGame() {
+    private fun loadGame() {
         viewModelScope.launch {
             _uiState.update { it.copy(gameResource = Resource.Loading) }
             val result = useCases.getGameById(gameId)
@@ -37,8 +42,41 @@ class DetailViewModel(
         }
     }
 
+    private fun checkIfFavorite() {
+        viewModelScope.launch {
+            val favorite = useCases.isFavorite(gameId)
+            _uiState.update { it.copy(isFavorite = favorite) }
+        }
+    }
+
+    private fun loadNote() {
+        viewModelScope.launch {
+            useCases.getNoteForGame(gameId).collect { note ->
+                _uiState.update { it.copy(note = note ?: "") }
+            }
+        }
+    }
+
+    private fun addToRecent() {
+        viewModelScope.launch {
+            useCases.addToRecentGames(gameId)
+        }
+    }
+
     fun toggleFavorite() {
-        _uiState.update { it.copy(isFavorite = !it.isFavorite) }
+        viewModelScope.launch {
+            val result = useCases.toggleFavorite(gameId)
+            if (result is Resource.Success) {
+                checkIfFavorite()
+            }
+        }
+    }
+
+    fun saveNote(note: String, status: String) {
+        viewModelScope.launch {
+            useCases.saveNoteForGame(gameId, note, status)
+            _uiState.update { it.copy(note = note, progressStatus = status) }
+        }
     }
 }
 

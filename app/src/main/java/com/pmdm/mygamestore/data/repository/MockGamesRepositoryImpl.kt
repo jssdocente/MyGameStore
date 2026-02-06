@@ -2,7 +2,12 @@ package com.pmdm.mygamestore.data.repository
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.pmdm.mygamestore.MyGameStoreApp
 import com.pmdm.mygamestore.data.local.MockDataSource
+import com.pmdm.mygamestore.data.local.entities.LibraryEntity
+import com.pmdm.mygamestore.data.local.entities.RecentGameEntity
+import com.pmdm.mygamestore.data.local.entities.SearchHistoryEntity
+import com.pmdm.mygamestore.data.local.entities.GameNoteEntity
 import com.pmdm.mygamestore.domain.model.AppError
 import com.pmdm.mygamestore.domain.model.Game
 import com.pmdm.mygamestore.domain.model.GameCategory
@@ -11,21 +16,32 @@ import com.pmdm.mygamestore.domain.model.PlatformEnum
 import com.pmdm.mygamestore.domain.model.Resource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 /**
- *  Implementación MOCK del repositorio de juegos
+ *  Implementación MOCK del repositorio de juegos con persistencia local mediante Room
  *
  * PROPÓSITO:
  * - Desarrollo sin depender de backend/API
  * - Filtra datos en MEMORIA (no en servidor)
  * - Simula delays de red para testing realista
+ * - Integra persistencia local con Room para biblioteca, favoritos y notas
  */
-class MockGamesRepositoryImpl : GamesRepository {
+class MockGamesRepositoryImpl(
+    private val sessionManager: SessionManager
+) : GamesRepository {
 
     private val dataSource = MockDataSource
+    private val db = MyGameStoreApp.database
+
+    private suspend fun getCurrentUser(): String {
+        return sessionManager.getUsername().first() ?: "guest"
+    }
 
     private suspend fun simulateNetworkDelay() {
         delay(800)
@@ -117,5 +133,114 @@ class MockGamesRepositoryImpl : GamesRepository {
         } catch (e: Exception) {
             Resource.Error(AppError.Unknown(e.message ?: "Error getting game"))
         }
+    }
+
+    // --- Implementación de Biblioteca y Favoritos con Room ---
+
+    override fun getLibraryGames(): Flow<Resource<List<Game>>> = flow {
+        emit(Resource.Loading)
+        val user = getCurrentUser()
+        db.libraryDao().getLibraryForUser(user).collect { entities ->
+            val games = entities.mapNotNull { entity ->
+                dataSource.games.find { it.id == entity.gameId }
+            }
+            emit(Resource.Success(games))
+        }
+    }
+
+    override fun getFavoriteGames(): Flow<Resource<List<Game>>> = flow {
+        emit(Resource.Loading)
+        val user = getCurrentUser()
+        db.libraryDao().getGamesByStatus(user, "FAVORITE").collect { entities ->
+            val games = entities.mapNotNull { entity ->
+                dataSource.games.find { it.id == entity.gameId }
+            }
+            emit(Resource.Success(games))
+        }
+    }
+
+    override suspend fun toggleFavorite(gameId: Int): Resource<Unit> {
+        return try {
+            val user = getCurrentUser()
+            val existing = db.libraryDao().getLibraryEntry(user, gameId)
+            if (existing != null) {
+                db.libraryDao().deleteLibraryEntry(user, gameId)
+            } else {
+                db.libraryDao().insertLibraryEntry(
+                    LibraryEntity(
+                        username = user,
+                        gameId = gameId,
+                        addedDate = System.currentTimeMillis(),
+                        status = "FAVORITE"
+                    )
+                )
+            }
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Error(AppError.Unknown(e.message ?: "Error toggling favorite"))
+        }
+    }
+
+    override suspend fun isFavorite(gameId: Int): Boolean {
+        val user = getCurrentUser()
+        return db.libraryDao().getLibraryEntry(user, gameId) != null
+    }
+
+    // --- Implementación de Historial y Notas ---
+
+    override fun getRecentSearches(): Flow<List<String>> = flow {
+        val user = getCurrentUser()
+        db.searchHistoryDao().getRecentSearches(user).map { entities ->
+            entities.map { it.query }
+        }.collect { emit(it) }
+    }
+
+    override suspend fun addSearchQuery(query: String) {
+        val user = getCurrentUser()
+        db.searchHistoryDao().insertSearch(
+            SearchHistoryEntity(
+                username = user,
+                query = query,
+                timestamp = System.currentTimeMillis()
+            )
+        )
+    }
+
+    override fun getRecentGames(): Flow<List<Game>> = flow {
+        val user = getCurrentUser()
+        db.recentGameDao().getRecentGames(user).map { entities ->
+            entities.mapNotNull { entity ->
+                dataSource.games.find { it.id == entity.gameId }
+            }
+        }.collect { emit(it) }
+    }
+
+    override suspend fun addToRecentGames(gameId: Int) {
+        val user = getCurrentUser()
+        db.recentGameDao().addRecentGameAndCleanup(
+            RecentGameEntity(
+                username = user,
+                gameId = gameId,
+                timestamp = System.currentTimeMillis()
+            )
+        )
+    }
+
+    override fun getNoteForGame(gameId: Int): Flow<String?> = flow {
+        val user = getCurrentUser()
+        db.gameNoteDao().getNoteForGame(user, gameId).map { it?.note }.collect { emit(it) }
+    }
+
+    override suspend fun saveNoteForGame(gameId: Int, note: String, status: String) {
+        val user = getCurrentUser()
+        db.gameNoteDao().insertNote(
+            GameNoteEntity(
+                gameId = gameId,
+                username = user,
+                note = note,
+                progressStatus = status,
+                lastUpdated = System.currentTimeMillis()
+            )
+        )
     }
 }

@@ -146,4 +146,31 @@ class GameUseCases(
                 }
             }
     }
+
+    /**
+     *  UC-009: Gestiona favoritos y biblioteca
+     */
+    fun getLibraryGames(): Flow<Resource<List<Game>>> = gamesRepository.getLibraryGames()
+
+    fun getFavoriteGames(): Flow<Resource<List<Game>>> = gamesRepository.getFavoriteGames()
+
+    suspend fun toggleFavorite(gameId: Int): Resource<Unit> = gamesRepository.toggleFavorite(gameId)
+
+    suspend fun isFavorite(gameId: Int): Boolean = gamesRepository.isFavorite(gameId)
+
+    /**
+     *  UC-010: Historial y Notas
+     */
+    fun getRecentSearches(): Flow<List<String>> = gamesRepository.getRecentSearches()
+
+    suspend fun addSearchQuery(query: String) = gamesRepository.addSearchQuery(query)
+
+    fun getRecentGames(): Flow<List<Game>> = gamesRepository.getRecentGames()
+
+    suspend fun addToRecentGames(gameId: Int) = gamesRepository.addToRecentGames(gameId)
+
+    fun getNoteForGame(gameId: Int): Flow<String?> = gamesRepository.getNoteForGame(gameId)
+
+    suspend fun saveNoteForGame(gameId: Int, note: String, status: String) =
+        gamesRepository.saveNoteForGame(gameId, note, status)
 }

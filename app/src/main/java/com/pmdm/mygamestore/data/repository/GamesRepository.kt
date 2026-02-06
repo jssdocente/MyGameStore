@@ -37,4 +37,28 @@ interface GamesRepository {
      * Obtiene un juego específico por su ID
      */
     suspend fun getGameById(id: Int): Resource<Game>
+
+    // --- Funcionalidades de Biblioteca y Favoritos (Room) ---
+
+    fun getLibraryGames(): Flow<Resource<List<Game>>>
+    
+    fun getFavoriteGames(): Flow<Resource<List<Game>>>
+
+    suspend fun toggleFavorite(gameId: Int): Resource<Unit>
+
+    suspend fun isFavorite(gameId: Int): Boolean
+
+    // --- Funcionalidades de Historial y Notas ---
+
+    fun getRecentSearches(): Flow<List<String>>
+
+    suspend fun addSearchQuery(query: String)
+
+    fun getRecentGames(): Flow<List<Game>>
+
+    suspend fun addToRecentGames(gameId: Int)
+
+    fun getNoteForGame(gameId: Int): Flow<String?>
+
+    suspend fun saveNoteForGame(gameId: Int, note: String, status: String)
 }
