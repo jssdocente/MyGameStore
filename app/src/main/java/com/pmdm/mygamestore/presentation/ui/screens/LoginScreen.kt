@@ -69,14 +69,14 @@ fun LoginScreen(
 
     Scaffold(
         topBar = {},
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        modifier = Modifier.padding(MaterialTheme.dimens.paddingMedium)
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(horizontal = MaterialTheme.dimens.paddingMedium)
         ) {
             Column(
                 modifier = Modifier

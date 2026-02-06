@@ -3,7 +3,6 @@ package com.pmdm.mygamestore.presentation.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -95,7 +94,11 @@ fun AppNavigation() {
                 }
                 // Pantalla de detalles de un juego específico
                 entry<AppRoutes.Detail> { route ->
-                    DetailScreen(route.gameId)
+                    val navStack = LocalNavStack.current
+                    DetailScreen(
+                        gameId = route.gameId,
+                        onBack = { navStack.removeLastOrNull() }
+                    )
                 }
             }
         )

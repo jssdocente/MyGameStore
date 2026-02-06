@@ -104,56 +104,18 @@ fun GameCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column {
-            // Carrusel de imágenes con HorizontalPager
+            // Carrusel de imágenes
             val images = if (game.screenshots.isNotEmpty()) {
                 game.screenshots.map { it.image }
             } else {
                 listOf(game.imageUrl)
             }
 
-            val pagerState = rememberPagerState(pageCount = { images.size })
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-            ) {
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxSize(),
-                    key = { images[it] }
-                ) { page ->
-                    AsyncImage(
-                        model = images[page],
-                        contentDescription = game.title,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-
-                // Indicadores de página (puntos)
-                if (images.size > 1) {
-                    Row(
-                        Modifier
-                            .height(20.dp)
-                            .fillMaxWidth()
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 8.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        repeat(images.size) { iteration ->
-                            val color = if (pagerState.currentPage == iteration) Color.White else Color.White.copy(alpha = 0.5f)
-                            Box(
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .clip(CircleShape)
-                                    .background(color)
-                                    .size(6.dp)
-                            )
-                        }
-                    }
-                }
-            }
+            ImageCarousel(
+                images = images,
+                contentDescription = game.title,
+                height = 180.dp
+            )
 
             // Información del juego
             Column(
